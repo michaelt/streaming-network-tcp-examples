@@ -7,7 +7,7 @@ import Pipes
 
 main :: IO ()
 main = serve (Host "127.0.0.1") "4001" $ \(connectionSocket, remoteAddr) -> 
-           runEffect $ fromSocket connectionSocket 4000 
+           runEffect $ fromSocket connectionSocket 4096
                         >-> Bytes.concatMap (\x -> B.pack [x,x])
                         >-> toSocket connectionSocket
                         

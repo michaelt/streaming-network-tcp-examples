@@ -4,7 +4,7 @@ import qualified Pipes.Prelude as P
 import Data.Word8 (toUpper)
 import Pipes
 main = serve (Host "127.0.0.1") "4000" $ \(client,_) -> 
-       runEffect $ fromSocket client 4000 
+       runEffect $ fromSocket client 4096
                    >-> P.map (B.map toUpper) 
                    >-> toSocket client   
 

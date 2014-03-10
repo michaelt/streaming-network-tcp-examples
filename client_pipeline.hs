@@ -13,8 +13,8 @@ import Control.Applicative
 main = connect "127.0.0.1" "4000" $ \(socket1,_) ->
        connect "127.0.0.1" "4001" $ \(socket2,_) ->
         do let act1 = runEffect $ PB.stdin >-> toSocket socket1
-               act2 = runEffect $ fromSocket socket1 4000 >-> toSocket socket2
-               act3 = runEffect $ fromSocket socket2 4000 >-> PB.stdout
+               act2 = runEffect $ fromSocket socket1 4096 >-> toSocket socket2
+               act3 = runEffect $ fromSocket socket2 4096 >-> PB.stdout
            runConcurrently $ Concurrently act1 *>
                              Concurrently act2 *>
                              Concurrently act3

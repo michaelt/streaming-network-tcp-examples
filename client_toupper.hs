@@ -11,7 +11,7 @@ import Control.Monad
 
 main = connect "127.0.0.1" "4000" $ \(connectionSocket,_) -> do
   let act1 = runEffect $ PB.stdin >-> toSocket connectionSocket
-      act2 = runEffect $ fromSocket connectionSocket 4000 >-> PB.stdout
+      act2 = runEffect $ fromSocket connectionSocket 4096 >-> PB.stdout
   concurrently act1 act2 
   return ()
 

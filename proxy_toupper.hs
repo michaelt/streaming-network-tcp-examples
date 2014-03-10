@@ -1,14 +1,14 @@
 import Pipes.Network.TCP
 import Control.Concurrent.Async 
 import Pipes
-import Control.Applicative
+import Control.Monad
 
 
 main = serve (Host "127.0.0.1") "4002" $ \(client, _) ->
        connect "127.0.0.1" "4000"      $ \(server, _) -> 
-        do let act1 =  runEffect $ fromSocket server 1000 >-> toSocket client
-               act2 =  runEffect $ fromSocket client 1000 >-> toSocket server
-           runConcurrently (Concurrently act1 *> Concurrently act2) 
+        do let act1 =  runEffect $ fromSocket server 4096 >-> toSocket client
+               act2 =  runEffect $ fromSocket client 4096 >-> toSocket server
+           void $ concurrently act1 act2
 
 
 

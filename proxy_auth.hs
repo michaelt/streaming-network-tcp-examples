@@ -40,11 +40,11 @@ checkAuth p = do
 
 
 main = serve (Host "127.0.0.1") "4003" $ \(client, _) -> 
-   do let authorization = checkAuth (fromSocket client 1000) >-> toSocket client 
+   do let authorization = checkAuth (fromSocket client 4096) >-> toSocket client 
       from_client <- runEffect authorization
       connect  "127.0.0.1" "4000"  $ \(server,_) ->
         do let pipe_forward = runEffect $ from_client >-> toSocket server
-               pipe_back    = runEffect $ fromSocket server 1000 >-> toSocket client
+               pipe_back    = runEffect $ fromSocket server 4096 >-> toSocket client
            concurrently pipe_forward pipe_back
            return ()
 
