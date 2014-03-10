@@ -24,7 +24,6 @@ Since most examples use the uppercasing service, we start it in one terminal
 then in another terminal we can write
 
     term2$ telnet localhost 4000
-    
     Trying 127.0.0.1...
     Connected to localhost.
     Escape character is '^]'.
@@ -45,7 +44,6 @@ In a flurry of terminal-openings we can also start up the doubling service
 then golly
 
      term5$ telnet localhost 4001
-     
      Trying 127.0.0.1...
      Connected to localhost.
      Escape character is '^]'.
@@ -66,7 +64,6 @@ directly on localhost 4000; we will demand authorization on 4003
 which then permits
 
      term8$ telnet localhost 4003
-     
      Trying 127.0.0.1...
      Connected to localhost.
      Escape character is '^]'.
