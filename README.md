@@ -14,15 +14,14 @@ The pipes variants follow Michael S's text in this
 order:
 
 -   `server_toupper.hs`
-    -   a server on 4000 that sends back telnetted
-        input upper-cased or 'angry'
+    -   a server on 4000 that sends back input sent e.g. with telnet
+        upper-cased or 'angry'
 -   `server_doubler.hs`
-    -   a server on 4001 that sends back telnetted
+    -   a server on 4001 that sends back 
         input doubled, `Char8` by `Char8`
 -   `client_toupper.hs`
     -   a client through which the user interacts
-        directly to the "angry" server without
-        e.g. calling `telnet`
+        directly to the "angry" server 
 -   `client_pipeline.hs`
     -   a client that sends material to the
         "angry" server and the doubling server and
