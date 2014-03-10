@@ -52,16 +52,16 @@ then in another terminal we can write
     Escape character is '^]'.
     hello
     HELLO
-    the people united will never be defeated!
-    THE PEOPLE UNITED WILL NEVER BE DEFEATED!
-    
+
 or we can use the direct Haskell client
 
     term3$ runhaskell client_toupper.hs 
-    hello
-    HELLO
     el pueblo unido jamas sera vencido!
     EL PUEBLO UNIDO JAMAS SERA VENCIDO!
+    el pueblo unido jamas sera vencido!
+    EL PUEBLO UNIDO JAMAS SERA VENCIDO!
+
+(These are the wages of treating `Word8`'s as letters.)
 
 In a flurry of terminal-openings we can also start
 up the doubling service
@@ -82,9 +82,6 @@ But let's try the Haskell client that interacts with 4000 and 4001 together
     term6$ runhaskell client_pipeline.hs 
     hello
     HHEELLLLOO
-    
-    free mumia!
-    FFRREEEE  MMUUMMIIAA!!
 
 
 Don't tell the children they can access the
@@ -102,7 +99,5 @@ which then permits
     Username: spaceballs
     Password: 12345
     Successfully authenticated.
-    whereof one cannot speak one must be silent 
-    WHEREOF ONE CANNOT SPEAK ONE MUST BE SILENT
     joy to the world!
     JOY TO THE WORLD!
