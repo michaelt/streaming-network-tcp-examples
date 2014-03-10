@@ -7,6 +7,9 @@ http://www.yesodweb.com/blog/2014/03/network-conduit-async
 which mix elementary tcp machinery with elementary
 concurrency and conduitry (here, pipe-istry).
 
+Apart from `pipes-network` and `async` they use the pleasant
+`word8` library. They use `lens-family` for the lens operations.
+
 The pipes variants follow Michael S's text in this
 order:
 
@@ -31,6 +34,11 @@ order:
     -   a proxy on 4003 that asks for demands
         authorization before condescending to send
         user input to the angry server on 4000
+
+The following remarks will require that eight
+instances of a terminal all be opened in the main
+directory. 
+
 
 Since most examples use the uppercasing service,
 we start it in one terminal
