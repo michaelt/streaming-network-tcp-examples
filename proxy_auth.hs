@@ -11,9 +11,9 @@ import Data.ByteString (ByteString)
 import Data.Word8 (_cr)
 import Control.Monad
 import Lens.Family.State.Strict
-import Lens.Family ((^.))
+import Lens.Family 
 import Lens.Family.Unchecked (iso)
-import Lens.Family2 (Lens')
+import Lens.Family2 
 
 
 creds :: [(ByteString, ByteString)]
@@ -53,7 +53,7 @@ line' :: Monad m => Lens' (Producer ByteString m r)
                           (Producer ByteString m (Producer ByteString m r))
 line' = iso to join where
   to p = do p' <- p ^. PB.line
-            return (p'  >-> PB.drop 1 )
+            return (PB.drop 1 p')
 
 
 -- ---------------------------------------------------------------------

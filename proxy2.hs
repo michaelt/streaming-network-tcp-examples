@@ -53,7 +53,7 @@ line' :: Monad m => Lens' (Producer ByteString m r)
                           (Producer ByteString m (Producer ByteString m r))
 line' = iso to join where
   to p = do p' <- p ^. PB.line
-            return (p'  >-> PB.drop 1 )
+            return (PB.drop 1 p')
 
 
 -- ---------------------------------------------------------------------
