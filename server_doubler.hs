@@ -2,7 +2,6 @@ import Pipes.Network.TCP
 import qualified Data.ByteString as B
 import qualified Pipes.Prelude as P
 import qualified Pipes.ByteString as Bytes
-import Data.Word8 (toUpper)
 import Pipes
 
 main :: IO ()

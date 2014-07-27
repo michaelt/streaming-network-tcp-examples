@@ -18,7 +18,7 @@ import Lens.Family2 (Lens')
 
 creds :: [(ByteString, ByteString)]
 creds = [ ("spaceballs", "12345") ]
-  
+
 
 shortLineInput :: Monad m => Int -> Parser ByteString m ByteString
 shortLineInput n = do bss <- zoom (line' . PB.splitAt n) drawAll 
