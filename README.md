@@ -61,20 +61,23 @@ which looks like this:
 
 
     main :: IO ()
-    main = serve (Host "127.0.0.1") "4000" $ \(client,_) -> 
-           runEffect $ fromSocket client 4096
-                       >-> Bytes.map toUpper
-                       >-> toSocket client
+    main = do putStrLn "Opening upper-casing service on 4000"
+              serve (Host "127.0.0.1") "4000" $ \(client,_) -> 
+                   runEffect $ fromSocket client 4096
+                               >-> Bytes.map toUpper
+                               >-> toSocket client
 
 
 we start it in one terminal:
 
     term1$ runhaskell Examples/ServerToUpper.hs
+    Opening upper-casing service on 4000
 
 or:
 
     term1$ pipes-network-tcp-examples ServerToUpper
-
+    Opening upper-casing service on 4000
+    
 then in another terminal we can write
 
     term2$ telnet localhost 4000
@@ -92,7 +95,6 @@ or we can use the direct Haskell client, which reads like this:
       concurrently act1 act2 
       return ()
 
-
 thus: 
 
     term3$ runhaskell Examples/ClientToUpper.hs 
@@ -106,7 +108,7 @@ up the doubling service
 
      term4$ runhaskell Examples/ServerDoubler.hs 
 
-then golly
+then elsewhere
 
      term5$ telnet localhost 4001
      Trying 127.0.0.1...
