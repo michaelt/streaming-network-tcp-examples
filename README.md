@@ -100,8 +100,6 @@ thus:
     term3$ runhaskell Examples/ClientToUpper.hs 
     el pueblo unido jamas sera vencido!
     EL PUEBLO UNIDO JAMAS SERA VENCIDO!
-    el pueblo unido jamas sera vencido!
-    EL PUEBLO UNIDO JAMAS SERA VENCIDO!
 
 In a flurry of terminal-openings we can also start
 up the doubling service
