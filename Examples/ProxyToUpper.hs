@@ -1,7 +1,8 @@
 module Examples.ProxyToUpper (main) where
+
+import Pipes
 import Pipes.Network.TCP
 import Control.Concurrent.Async 
-import Pipes
 import Control.Monad
 
 main :: IO ()

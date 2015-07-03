@@ -1,4 +1,5 @@
 module Examples.ServerDouble (main) where
+  
 import Pipes.Network.TCP
 import qualified Data.ByteString as B
 import qualified Pipes.Prelude as P

@@ -1,15 +1,10 @@
 module Examples.ClientPipeline (main) where
 
-import Pipes.Network.TCP
-import qualified Data.ByteString as B
-import qualified Pipes.Prelude as P
-import qualified Pipes.ByteString as PB
-import           Control.Concurrent.Async 
-import Data.Word8 (toUpper)
 import Pipes
-import Lens.Family
-import Data.Monoid
-import Control.Monad
+import qualified Pipes.ByteString as PB
+import Pipes.Network.TCP
+
+import Control.Concurrent.Async 
 import Control.Applicative
 
 main = connect "127.0.0.1" "4000" $ \(socket1,_) ->

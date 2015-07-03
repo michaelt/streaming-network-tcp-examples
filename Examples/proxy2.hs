@@ -1,6 +1,6 @@
 {-#LANGUAGE OverloadedStrings#-}
 {-#LANGUAGE RankNTypes#-}
-
+module Proxy2 (main) where
 import Pipes
 import Pipes.Parse
 import qualified Pipes.ByteString as PB
@@ -10,10 +10,7 @@ import qualified Data.ByteString as B
 import Data.ByteString (ByteString) 
 import Data.Word8 (_cr)
 import Control.Monad
-import Lens.Family.State.Strict
-import Lens.Family ((^.))
-import Lens.Family.Unchecked (iso)
-import Lens.Family2 (Lens')
+import Lens.Simple
 
 
 creds :: [(ByteString, ByteString)]

@@ -1,19 +1,17 @@
 {-#LANGUAGE OverloadedStrings#-}
 {-#LANGUAGE RankNTypes#-}
 module Examples.ProxyAuth (main) where
+
 import Pipes
 import Pipes.Parse
 import qualified Pipes.ByteString as PB
 import Pipes.Network.TCP
+
 import Control.Concurrent.Async
 import qualified Data.ByteString as B
 import Data.ByteString (ByteString) 
 import Data.Word8 (_cr)
-import Control.Monad
-import Lens.Family.State.Strict
-import Lens.Family 
-import Lens.Family.Unchecked (iso)
-import Lens.Family2 
+import Lens.Simple
 
 
 creds :: [(ByteString, ByteString)]
@@ -51,7 +49,7 @@ main = serve (Host "127.0.0.1") "4003" $ \(client, _) ->
                       
 line' :: Monad m => Lens' (Producer ByteString m r) 
                           (Producer ByteString m (Producer ByteString m r))
-line' = iso to join where
+line' = iso to (>>= id) where
   to p = do p' <- p ^. PB.line
             return (PB.drop 1 p')
 

@@ -1,10 +1,12 @@
 module Examples.ServerToUpper (main) where
 
-import Pipes.Network.TCP
+import Pipes
 import qualified Pipes.ByteString as Bytes
 import qualified Pipes.Prelude as P
+import Pipes.Network.TCP
+
 import Data.Word8 (toUpper)
-import Pipes
+
 main :: IO ()
 main = do putStrLn "Opening upper-casing service on 4000"
           serve (Host "127.0.0.1") "4000" $ \(client,_) -> 

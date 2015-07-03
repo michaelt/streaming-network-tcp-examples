@@ -24,8 +24,7 @@ executable pipes-network-tcp-examples
                        , pipes-parse
                        , pipes-bytestring
                        , pipes-network
-                       , lens-family
-                       , lens-family-core
+                       , lens-simple
                        , optparse-applicative >=0.9
                        , bytestring >=0.10
                        , async >=2.0 
