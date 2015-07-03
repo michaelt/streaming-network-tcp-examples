@@ -26,10 +26,6 @@ opts = helper <*> subparser stuff where
     , command "ServerToUpper"  (info (pure ServerToUpper.main) idm)
     ]
 
- -- 
- --   )
- --  ( command "start" (info (start <$> argument str idm) idm)
- -- <> command ".main"  (info (pure .main) idm) )
 
 main :: IO ()
 main = join $ execParser (info opts idm)
