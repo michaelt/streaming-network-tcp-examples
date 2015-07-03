@@ -13,7 +13,6 @@ import qualified Examples.ServerDouble   as ServerDouble
 import qualified Examples.ServerToUpper  as ServerToUpper
 
 
-
 opts :: Parser (IO ())
 opts = helper <*> subparser stuff where 
    stuff = mconcat
