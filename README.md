@@ -4,10 +4,10 @@ pipes-network-tcp-examples
 These mechanically follow the pleasantly
 transparent 'hello world'-ish examples in
 http://www.yesodweb.com/blog/2014/03/network-conduit-async
-which mix elementary tcp machinery with elementary
+which mix networking ABCs with elementary
 concurrency and conduitry (here, pipe-istry).
 
-Apart from `pipes-network` and `async` they use the pleasant
+Apart from `pipes-network` and `async` we need the pleasant
 `word8` library. They use `lens-family` for the lens operations.
 
 The pipes variants follow Michael S's text in this
@@ -97,8 +97,8 @@ or we can use the direct Haskell client, which reads like this:
 
 thus: 
 
-    term3$ runhaskell Examples/ClientToUpper.hs 
-    el pueblo unido jamas sera vencido!
+    term3$ runhaskell Examples/ClientToUpper.hs  # or pipes-network-tcp-examples ClientToUpper
+    el pueblo unido jamas sera vencido!  
     EL PUEBLO UNIDO JAMAS SERA VENCIDO!
 
 In a flurry of terminal-openings we can also start
@@ -127,10 +127,10 @@ i.e.:
                                  Concurrently act2 *>
                                  Concurrently act3
 
-(note the pretentious use of the `Applicative` instance for `Concurrently` from the
+(note the use of the `Applicative` instance for `Concurrently` from the
 `async` library), thus:
 
-    term6$ runhaskell Examples/ClientPipeline.hs 
+    term6$ runhaskell Examples/ClientPipeline.hs   # or pipes-network-tcp-examples ClientPipeline
     hello
     HHEELLLLOO
 
