@@ -86,8 +86,9 @@ then in another terminal we can write
     Escape character is '^]'.
     hello -- <-- our input
     HELLO
+    ...
 
-or we can use the direct Haskell client, which reads like this:
+or we can scrap telnet and use a dedicated Haskell client, which reads like this:
 
     main = connect "127.0.0.1" "4000" $ \(connectionSocket,_) -> do
       let act1 = runEffect $ PB.stdin >-> toSocket connectionSocket
@@ -98,13 +99,16 @@ or we can use the direct Haskell client, which reads like this:
 thus: 
 
     term3$ runhaskell Examples/ClientToUpper.hs  # or pipes-network-tcp-examples ClientToUpper
+    el pueblo unido jamas sera vencido!  -- our input
+    EL PUEBLO UNIDO JAMAS SERA VENCIDO!
     el pueblo unido jamas sera vencido!  
     EL PUEBLO UNIDO JAMAS SERA VENCIDO!
-
+    ...
+    
 In a flurry of terminal-openings we can also start
 up the doubling service
 
-     term4$ runhaskell Examples/ServerDoubler.hs 
+     term4$ runhaskell Examples/ServerDouble.hs # or pipes-network-tcp-examples ServerDouble
 
 then elsewhere
 
