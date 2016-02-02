@@ -1,13 +1,10 @@
 module Examples.ClientToUpper (
-   -- * In which we define a client that contacts our remote uppercasing service
-   -- $example
-   
-   -- * Program
-   -- $program
-   
-   -- ** Conduit version
-   -- $conduit
-       
+-- * In which we define a client that contacts our remote uppercasing service
+-- $example
+-- * Program
+-- $program
+-- ** Conduit version
+-- $conduit
    main
    ) where
 

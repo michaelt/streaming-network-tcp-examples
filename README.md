@@ -84,7 +84,7 @@ then in another terminal we can write
     Trying 127.0.0.1...
     Connected to localhost.
     Escape character is '^]'.
-    hello
+    hello -- <-- our input
     HELLO
 
 or we can use the direct Haskell client, which reads like this:

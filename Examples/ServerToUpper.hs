@@ -1,13 +1,12 @@
 module Examples.ServerToUpper (
 -- * In which we define a server that send back strings upper-cased
 -- $example
-
 -- * Program
 -- $program
-
 -- ** Conduit version
 -- $conduit
-  main ) where
+   main 
+   ) where
 
 import Pipes
 import Pipes.Network.TCP

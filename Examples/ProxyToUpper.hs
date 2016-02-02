@@ -7,11 +7,11 @@ import Control.Monad
 
 main :: IO ()
 main = serve (Host "127.0.0.1") "4002" $ \(client, _) ->
-       connect "127.0.0.1" "4000"      $ \(server, _) -> 
-        do let act1 =  runEffect $ fromSocket server 4096 >-> toSocket client
-               act2 =  runEffect $ fromSocket client 4096 >-> toSocket server
-           void $ concurrently act1 act2
-
+  connect "127.0.0.1" "4000"    $ \(server, _) -> 
+    do let act1 =  runEffect $ fromSocket client 4096 >-> toSocket server
+           act2 =  runEffect $ fromSocket server 4096 >-> toSocket client
+       concurrently act1 act2
+       return ()
 
 
 

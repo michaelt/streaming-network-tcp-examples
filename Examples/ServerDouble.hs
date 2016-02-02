@@ -1,15 +1,13 @@
 module Examples.ServerDouble ( 
 -- * In which we define a server that the doubles the characters in incoming strings
 -- $example
-
 -- * Program
 -- $program
-
 -- ** Conduit version
 -- $conduit
-  main ) where
+   main 
+   ) where
 
-  
 import Pipes.Network.TCP
 import qualified Data.ByteString as B
 import qualified Pipes.ByteString as Bytes

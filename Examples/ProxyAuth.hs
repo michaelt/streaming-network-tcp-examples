@@ -6,21 +6,15 @@ import Pipes
 import Pipes.Parse
 import qualified Pipes.ByteString as PB
 import Pipes.Network.TCP
-
-import Control.Concurrent.Async
 import qualified Data.ByteString as B
 import Data.ByteString (ByteString) 
 import Data.Word8 (_cr)
-import Lens.Simple
 
+import Control.Concurrent.Async
+import Lens.Simple
 
 creds :: [(ByteString, ByteString)]
 creds = [ ("spaceballs", "12345") ]
-  
-
-shortLineInput :: Monad m => Int -> Parser ByteString m ByteString
-shortLineInput n = do bss <- zoom (line' . PB.splitAt n) drawAll 
-                      return $ B.filter (/= _cr) (B.concat bss)
 
 checkAuth :: MonadIO m 
           => Producer ByteString m r 
@@ -37,7 +31,10 @@ checkAuth p = do
     return p2 -- when using `error` 
 
 main :: IO ()
-main = serve (Host "127.0.0.1") "4003" $ \(client, _) -> 
+main = serve (Host "127.0.0.1") "4003" process 
+
+  where
+  process (client, _) =
    do let authorization = checkAuth (fromSocket client 4096) >-> toSocket client 
       from_client <- runEffect authorization
       connect  "127.0.0.1" "4000"  $ \(server,_) ->
@@ -46,13 +43,17 @@ main = serve (Host "127.0.0.1") "4003" $ \(client, _) ->
            concurrently (runEffect pipe_forward) (runEffect pipe_back)
            return ()
 
-                      
-line' :: Monad m => Lens' (Producer ByteString m r) 
-                          (Producer ByteString m (Producer ByteString m r))
-line' = iso to (>>= id) where
+
+  
+shortLineInput :: Monad m => Int -> Parser ByteString m ByteString
+shortLineInput n = do 
+    bss <- zoom (line' . PB.splitAt n) drawAll 
+    return $ B.filter (/= _cr) (B.concat bss)
+  where
+  -- Bytes.line doesn't drop the following newline
+  line' = iso to (>>= id)
   to p = do p' <- p ^. PB.line
             return (PB.drop 1 p')
-
 
 -- ---------------------------------------------------------------------
 -- creds :: [(ByteString, ByteString)]

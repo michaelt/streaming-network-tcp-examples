@@ -1,13 +1,10 @@
 module Examples.ClientPipeline (
-   -- * In which we define a client that links remote doubling and uppercasing services
-   -- $example
-   
-   -- * Program
-   -- $program
-   
-   -- ** Conduit version
-   -- $conduit
-       
+-- * In which we define a client that links remote doubling and uppercasing services
+-- $example
+-- * Program
+-- $program
+-- ** Conduit version
+-- $conduit
    main
    ) where
 
