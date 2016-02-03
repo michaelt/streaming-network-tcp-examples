@@ -16,7 +16,7 @@ order:
 -   `Examples/ServerToUpper.hs`
     -   a server on 4000 that sends back input sent e.g. with telnet
         upper-cased or 'angry'
--   `Examples/ServerDoubler.hs`
+-   `Examples/ServerDouble.hs`
     -   a server on 4001 that sends back 
         input doubled, `Char8` by `Char8`
 -   `Examples/ClientToUpper.hs`
