@@ -1,35 +1,33 @@
-streaming-network-tcp-examples
+streaming-network-examples
 ==============================
 
 These mechanically follow the pleasantly
 transparent 'hello world'-ish examples in
-http://www.yesodweb.com/blog/2014/03/network-conduit-async
-which mix networking ABCs with elementary
-concurrency and conduitry.
+http://www.yesodweb.com/blog/2014/03/network-conduit-async .
 
-Apart from `pipes-network` and `async` we use the
+Apart from `Streaming.Network.TCP` and `async` we use the
 `word8` library for humane word8 handling. 
 
 The variants follow Michael S's text in this
 order:
 
--   `Examples/ServerToUpper.hs`
+-   `serverToUpper`
     -   a server on 4000 that sends back input sent e.g. with telnet
         upper-cased or 'angry'
--   `Examples/ServerDouble.hs`
+-   `serverDouble`
     -   a server on 4001 that sends back 
         input doubled, `Char8` by `Char8`
--   `Examples/ClientToUpper.hs`
+-   `clientToUpper`
     -   a client through which the user interacts
         directly to the "angry" server 
--   `Examples/ClientPipeline.hs`
+-   `clientPipeline`
     -   a client that sends material to the
         "angry" server and the doubling server and
         returns it to the user
--   `Examples/ProxyToUpper.hs`
+-   `proxyToUpper`
     -   a proxy on 4002 that sends input to the
         angry server on 4000
--   `Examples/ProxyAuth.hs`
+-   `proxyAuth`
     -   a proxy on 4003 that asks for demands
         authorization before condescending to send
         user input to the angry server on 4000
@@ -41,8 +39,8 @@ directory of the repository; if you like you can
 crude option parser will make the examples usable with
 one executable:
 
-    $ pipes-network-tcp-examples --help
-    Usage: pipes-network-tcp-examples COMMAND
+    $ streaming-network-examples --help
+    Usage: streaming-network-examples COMMAND
 
     Available options:
       -h,--help                Show this help text
@@ -157,7 +155,7 @@ Don't tell the children they can access the
 uppercasing server directly on localhost 4000; we will
 demand authorization on 4003
 
-    term7$ streaming-network-tcp-examples ProxyAuth
+    term7$ streaming-network-examples ProxyAuth
 
 which then elsewhere permits
 
