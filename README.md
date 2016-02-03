@@ -62,16 +62,17 @@ which looks like this:
     serverToUpper = do
         putStrLn "Opening upper-casing service on 4000"
         serve (Host "127.0.0.1") "4000" $ \(client,_) -> 
-          toSocket client $ Q.map toUpper $ fromSocket client 4096 
-         
+          fromSocket client 4096 -- raw bytes are received from telnet user or the like
+          & Q.map toUpper        -- we map them to uppercase
+          & toSocket client      -- and send them back
+
 
 we start it in one terminal:
-
 
     term1$ streaming-network-tcp-examples ServerToUpper
     Opening upper-casing service on 4000
     
-then in another terminal we can write
+then in another terminal we can telnet to it:
 
     term2$ telnet localhost 4000
     Trying 127.0.0.1...
@@ -83,14 +84,13 @@ then in another terminal we can write
 
 or we can scrap telnet and use a dedicated Haskell client, which reads like this:
 
-      clientToUpper :: IO ()
-      clientToUpper = connect "127.0.0.1" "4000" $ \(connectionSocket,_) -> do
-        let act1 = toSocket connectionSocket Q.stdin  
-            act2 = Q.stdout (fromSocket connectionSocket 4096) 
-        concurrently act1 act2 
-        return ()
-      
-
+    clientToUpper :: IO ()
+    clientToUpper = connect "127.0.0.1" "4000" $ \(socket,_) -> do
+      let act1 = toSocket socket Q.stdin           -- we send our stdin to the service
+          act2 = Q.stdout (fromSocket socket 4096) -- we read our stdout from the service
+      concurrently act1 act2 
+      return ()
+    
 thus: 
 
     term3$ streaming-network-tcp-examples ClientToUpper
@@ -100,18 +100,18 @@ thus:
     EL PUEBLO UNIDO JAMAS SERA VENCIDO!
     ...
     
-In a flurry of terminal-openings we can also start
+To complicate things a bit, we can also start
 up the doubling service, which looks like this
 
     serverDoubler :: IO ()
     serverDoubler = do 
       putStrLn "Double server available on 4001"
-      serve (Host "127.0.0.1") "4001" $ \(connectionSocket, remoteAddr) -> 
-        fromSocket connectionSocket 4096
-              & Q.toChunks
-              & S.map (B.concatMap (\x -> B.pack [x,x]))
-              & Q.fromChunks
-              & toSocket connectionSocket
+      serve (Host "127.0.0.1") "4001" $ \(socket, remoteAddr) -> 
+        fromSocket socket 4096  -- raw bytes from a client
+          & Q.toChunks          -- are munged ...
+          & S.map (B.concatMap (\x -> B.pack [x,x]))
+          & Q.fromChunks
+          & toSocket socket     -- and sent back
 
 
 thus
@@ -127,7 +127,7 @@ then elsewhere
      hello
      hheelllloo
 
-But let's try the Haskell client that interacts with 4000 and 4001 together,
+Now let's try the Haskell client that interacts with 4000 and 4001 together,
 i.e.:
 
     clientPipeline :: IO ()
@@ -136,10 +136,13 @@ i.e.:
       putStrLn "Input will thus be uppercased and doubled char-by-char.\n"
       connect "127.0.0.1" "4000" $ \(socket1,_) ->
         connect "127.0.0.1" "4001" $ \(socket2,_) ->
-          do let act1 = toSocket socket1 (Q.stdin)
+          do let act1 = toSocket socket1 Q.stdin
+                 -- we send out stdin to the uppercaser
                  act2 = toSocket socket2 (fromSocket socket1 4096)
+                 -- we send the results from the uppercase to the doubler
                  act3 = Q.stdout (fromSocket socket2 4096)
-             runConcurrently $ Concurrently act1 *>
+                 -- we send the doubler's output to stdout
+             runConcurrently $ Concurrently act1 *>  -- all this simultaneously
                                Concurrently act2 *>
                                Concurrently act3
 
@@ -170,5 +173,39 @@ which then elsewhere permits
     HELLO
     hello!
     HELLO!
+    
+
+where the program looks like so:
+
+
+    proxyAuth :: IO ()
+    proxyAuth = serve (Host "127.0.0.1") "4003" process  
+      where
+      process (client, _) =
+        do from_client <- toSocket client (checkAuth (fromSocket client 4096))
+           connect  "127.0.0.1" "4000"  $ \(server,_) ->
+             do let pipe_forward = toSocket server from_client 
+                    pipe_back    = toSocket client (fromSocket server 4096) 
+                concurrently pipe_forward pipe_back
+                return ()
+
+      checkAuth :: MonadIO m  => Q.ByteString m r -> Q.ByteString m (Q.ByteString m r)
+      checkAuth p = do 
+         Q.chunk "Username: "
+         (username,p1) <- lift $ shortLineInput 80 p
+         Q.chunk "Password: "
+         (password,p2) <- lift $ shortLineInput 80 p1
+         if (username, password) `elem` creds
+              then Q.chunk "Successfully authenticated.\n"
+              else do Q.chunk "Invalid username/password.\n"
+                      error "Invalid authentication, please log somewhere..."
+         return p2 -- when using `error`
+ 
+      shortLineInput n bs = do
+         (bs:>rest) <- Q.toStrict $ Q.break (==10) $ Q.splitAt n bs
+         return $ (B.filter (/= _cr) bs, Q.drop 1 $ rest >>= id) 
+    
+      creds :: [(ByteString, ByteString)]
+      creds = [ ("spaceballs", "12345") ]
 
 
