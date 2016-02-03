@@ -5,12 +5,12 @@ These mechanically follow the pleasantly
 transparent 'hello world'-ish examples in
 http://www.yesodweb.com/blog/2014/03/network-conduit-async
 which mix networking ABCs with elementary
-concurrency and conduitry (here, pipe-istry).
+concurrency and conduitry.
 
-Apart from `pipes-network` and `async` we need the pleasant
-`word8` library. They use `lens-family` for the lens operations.
+Apart from `pipes-network` and `async` we use the
+`word8` library for humane word8 handling. 
 
-The pipes variants follow Michael S's text in this
+The variants follow Michael S's text in this
 order:
 
 -   `Examples/ServerToUpper.hs`
@@ -60,22 +60,17 @@ Since most examples use the uppercasing service,
 which looks like this:
 
 
-    main :: IO ()
-    main = do putStrLn "Opening upper-casing service on 4000"
-              serve (Host "127.0.0.1") "4000" $ \(client,_) -> 
-                   runEffect $ fromSocket client 4096
-                               >-> Bytes.map toUpper
-                               >-> toSocket client
-
+    serverToUpper :: IO ()
+    serverToUpper = do
+        putStrLn "Opening upper-casing service on 4000"
+        serve (Host "127.0.0.1") "4000" $ \(client,_) -> 
+          toSocket client $ Q.map toUpper $ fromSocket client 4096 
+         
 
 we start it in one terminal:
 
-    term1$ runhaskell Examples/ServerToUpper.hs
-    Opening upper-casing service on 4000
 
-or:
-
-    term1$ pipes-network-tcp-examples ServerToUpper
+    term1$ streaming-network-examples ServerToUpper
     Opening upper-casing service on 4000
     
 then in another terminal we can write
@@ -90,15 +85,17 @@ then in another terminal we can write
 
 or we can scrap telnet and use a dedicated Haskell client, which reads like this:
 
-    main = connect "127.0.0.1" "4000" $ \(connectionSocket,_) -> do
-      let act1 = runEffect $ PB.stdin >-> toSocket connectionSocket
-          act2 = runEffect $ fromSocket connectionSocket 4096 >-> PB.stdout
-      concurrently act1 act2 
-      return ()
+      clientToUpper :: IO ()
+      clientToUpper = connect "127.0.0.1" "4000" $ \(connectionSocket,_) -> do
+        let act1 = toSocket connectionSocket Q.stdin  
+            act2 = Q.stdout (fromSocket connectionSocket 4096) 
+        concurrently act1 act2 
+        return ()
+      
 
 thus: 
 
-    term3$ runhaskell Examples/ClientToUpper.hs  # or pipes-network-tcp-examples ClientToUpper
+    term3$ streaming-network-examples ClientToUpper
     el pueblo unido jamas sera vencido!  -- our input
     EL PUEBLO UNIDO JAMAS SERA VENCIDO!
     el pueblo unido jamas sera vencido!  
@@ -106,9 +103,22 @@ thus:
     ...
     
 In a flurry of terminal-openings we can also start
-up the doubling service
+up the doubling service, which looks like this
 
-     term4$ runhaskell Examples/ServerDouble.hs # or pipes-network-tcp-examples ServerDouble
+    serverDoubler :: IO ()
+    serverDoubler = do 
+      putStrLn "Double server available on 4001"
+      serve (Host "127.0.0.1") "4001" $ \(connectionSocket, remoteAddr) -> 
+        fromSocket connectionSocket 4096
+              & Q.toChunks
+              & S.map (B.concatMap (\x -> B.pack [x,x]))
+              & Q.fromChunks
+              & toSocket connectionSocket
+
+
+thus
+
+     term4$ streaming-network-examples ServerDouble
 
 then elsewhere
 
@@ -122,32 +132,32 @@ then elsewhere
 But let's try the Haskell client that interacts with 4000 and 4001 together,
 i.e.:
 
-    main = connect "127.0.0.1" "4000" $ \(socket1,_) ->
-           connect "127.0.0.1" "4001" $ \(socket2,_) ->
-            do let act1 = runEffect $ PB.stdin >-> toSocket socket1
-                   act2 = runEffect $ fromSocket socket1 4096 >-> toSocket socket2
-                   act3 = runEffect $ fromSocket socket2 4096 >-> PB.stdout
-               runConcurrently $ Concurrently act1 *>
-                                 Concurrently act2 *>
-                                 Concurrently act3
+    clientPipeline :: IO ()
+    clientPipeline = do
+      putStrLn "We will connect stdin to 4000 and 4001 in succession."
+      putStrLn "Input will thus be uppercased and doubled char-by-char.\n"
+      connect "127.0.0.1" "4000" $ \(socket1,_) ->
+        connect "127.0.0.1" "4001" $ \(socket2,_) ->
+          do let act1 = toSocket socket1 (Q.stdin)
+                 act2 = toSocket socket2 (fromSocket socket1 4096)
+                 act3 = Q.stdout (fromSocket socket2 4096)
+             runConcurrently $ Concurrently act1 *>
+                               Concurrently act2 *>
+                               Concurrently act3
 
 (note the use of the `Applicative` instance for `Concurrently` from the
 `async` library), thus:
 
-    term6$ runhaskell Examples/ClientPipeline.hs   # or pipes-network-tcp-examples ClientPipeline
+    term6$ streaming-network-examples ClientPipeline
     hello
     HHEELLLLOO
 
 
 Don't tell the children they can access the
-'angry' server directly on localhost 4000; we will
+uppercasing server directly on localhost 4000; we will
 demand authorization on 4003
 
-    term7$ runhaskell Examples/ProxyAuth.hs
-
-or
-
-    term7$ pipes-network-tcp-examples ProxyAuth
+    term7$ streaming-network-tcp-examples ProxyAuth
 
 which then elsewhere permits
 
@@ -158,5 +168,9 @@ which then elsewhere permits
     Username: spaceballs
     Password: 12345
     Successfully authenticated.
-    joy to the world!
-    JOY TO THE WORLD!
+    hello
+    HELLO
+    hello!
+    HELLO!
+
+
