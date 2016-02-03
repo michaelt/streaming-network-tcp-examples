@@ -1,5 +1,5 @@
-pipes-network-tcp-examples
-==========================
+streaming-network-tcp-examples
+==============================
 
 These mechanically follow the pleasantly
 transparent 'hello world'-ish examples in

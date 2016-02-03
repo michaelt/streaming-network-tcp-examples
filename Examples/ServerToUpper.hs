@@ -8,18 +8,17 @@ module Examples.ServerToUpper (
    main 
    ) where
 
-import Pipes
-import Pipes.Network.TCP
-import qualified Pipes.ByteString as Bytes
-
+import Streaming
+import Streaming.Network.TCP
+import qualified Data.ByteString.Streaming  as Q
 import Data.Word8 (toUpper)
 
 main :: IO ()
 main = do putStrLn "Opening upper-casing service on 4000"
           serve (Host "127.0.0.1") "4000" $ \(client,_) -> 
-           runEffect $ fromSocket client 4096
-                       >-> Bytes.map toUpper
-                       >-> toSocket client   
+            toSocket client $ Q.map toUpper $ fromSocket client 4096 
+                                     
+
 
 
 {- $example 

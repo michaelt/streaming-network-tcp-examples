@@ -1,16 +1,13 @@
 module Examples.ServePipes (main) where
   
-import Pipes.Network.TCP
-import qualified Pipes.ByteString as Bytes
-import qualified Pipes.Prelude as P
+import Streaming.Network.TCP
+import qualified Data.ByteString.Streaming as Q
 import Data.Word8 (toUpper)
-import Pipes
 
 main :: IO ()
 main = serve (Host "127.0.0.1") "4000" $ \(client,_) -> 
-       runEffect $ fromSocket client 4096
-                   >-> Bytes.map toUpper
-                   >-> toSocket client   
+         toSocket client $ Q.map toUpper $ fromSocket client 4096
+ 
 
 
 

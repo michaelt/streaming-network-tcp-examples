@@ -8,9 +8,9 @@ module Examples.ClientPipeline (
    main
    ) where
 
-import Pipes
-import qualified Pipes.ByteString as PB
-import Pipes.Network.TCP
+
+import qualified Data.ByteString.Streaming as Q
+import Streaming.Network.TCP
 
 import Control.Concurrent.Async 
 import Control.Applicative
@@ -20,9 +20,9 @@ main = do
   putStrLn "Input will thus be uppercased and doubled char-by-char.\n"
   connect "127.0.0.1" "4000" $ \(socket1,_) ->
     connect "127.0.0.1" "4001" $ \(socket2,_) ->
-      do let act1 = runEffect $ PB.stdin >-> toSocket socket1
-             act2 = runEffect $ fromSocket socket1 4096 >-> toSocket socket2
-             act3 = runEffect $ fromSocket socket2 4096 >-> PB.stdout
+      do let act1 = toSocket socket1 (Q.stdin)
+             act2 = toSocket socket2 (fromSocket socket1 4096)
+             act3 = Q.stdout (fromSocket socket2 4096)
          runConcurrently $ Concurrently act1 *>
                            Concurrently act2 *>
                            Concurrently act3

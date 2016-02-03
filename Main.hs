@@ -1,5 +1,5 @@
 module Main where
-  
+
 import Options.Applicative
 import Control.Applicative
 import Control.Monad
@@ -28,3 +28,5 @@ opts = helper <*> subparser stuff where
 
 main :: IO ()
 main = join $ execParser (info opts idm)
+
+

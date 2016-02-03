@@ -8,17 +8,20 @@ module Examples.ServerDouble (
    main 
    ) where
 
-import Pipes.Network.TCP
+import Streaming.Network.TCP
+import qualified Streaming.Prelude as S
 import qualified Data.ByteString as B
-import qualified Pipes.ByteString as Bytes
-import Pipes
+import qualified Data.ByteString.Streaming as Q
+import Data.Function ((&))
 
 main :: IO ()
 main = do putStrLn "Double server available on 4001"
           serve (Host "127.0.0.1") "4001" $ \(connectionSocket, remoteAddr) -> 
-            runEffect $ fromSocket connectionSocket 4096
-                        >-> Bytes.concatMap (\x -> B.pack [x,x])
-                        >-> toSocket connectionSocket
+            fromSocket connectionSocket 4096
+                  & Q.toChunks
+                  & S.map (B.concatMap (\x -> B.pack [x,x]))
+                  & Q.fromChunks
+                  & toSocket connectionSocket
                         
 {- $example
 
