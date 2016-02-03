@@ -1,8 +1,8 @@
-streaming-network-examples
+streaming-network-tcp-examples
 ==============================
 
 These mechanically follow the pleasantly
-transparent 'hello world'-ish examples in
+transparent 'hello world'-ish examples of TCP connections in
 http://www.yesodweb.com/blog/2014/03/network-conduit-async .
 
 Apart from `Streaming.Network.TCP` and `async` we use the
@@ -39,8 +39,8 @@ directory of the repository; if you like you can
 crude option parser will make the examples usable with
 one executable:
 
-    $ streaming-network-examples --help
-    Usage: streaming-network-examples COMMAND
+    $ streaming-network-tcp-examples --help
+    Usage: streaming-network-tcp-examples COMMAND
 
     Available options:
       -h,--help                Show this help text
@@ -68,7 +68,7 @@ which looks like this:
 we start it in one terminal:
 
 
-    term1$ streaming-network-examples ServerToUpper
+    term1$ streaming-network-tcp-examples ServerToUpper
     Opening upper-casing service on 4000
     
 then in another terminal we can write
@@ -93,7 +93,7 @@ or we can scrap telnet and use a dedicated Haskell client, which reads like this
 
 thus: 
 
-    term3$ streaming-network-examples ClientToUpper
+    term3$ streaming-network-tcp-examples ClientToUpper
     el pueblo unido jamas sera vencido!  -- our input
     EL PUEBLO UNIDO JAMAS SERA VENCIDO!
     el pueblo unido jamas sera vencido!  
@@ -116,7 +116,7 @@ up the doubling service, which looks like this
 
 thus
 
-     term4$ streaming-network-examples ServerDouble
+     term4$ streaming-network-tcp-examples ServerDouble
 
 then elsewhere
 
@@ -146,7 +146,7 @@ i.e.:
 (note the use of the `Applicative` instance for `Concurrently` from the
 `async` library), thus:
 
-    term6$ streaming-network-examples ClientPipeline
+    term6$ streaming-network-tcp-examples ClientPipeline
     hello
     HHEELLLLOO
 
@@ -155,7 +155,7 @@ Don't tell the children they can access the
 uppercasing server directly on localhost 4000; we will
 demand authorization on 4003
 
-    term7$ streaming-network-examples ProxyAuth
+    term7$ streaming-network-tcp-examples ProxyAuth
 
 which then elsewhere permits
 
