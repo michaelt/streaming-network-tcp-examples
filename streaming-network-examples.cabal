@@ -17,7 +17,7 @@ cabal-version:       >=1.10
 
 
   
-executable streaming-network-tcp-examples
+executable streaming-network-examples
   main-is:             Main.hs
   -- other-modules:       
   other-extensions:    OverloadedStrings
